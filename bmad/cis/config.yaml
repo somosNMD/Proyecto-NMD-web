@@ -1,0 +1,7 @@
+# CIS Module Configuration
+# Derived from CORE config to enable brainstorming workflow
+# Date: 2025-10-16
+
+user_name: BMad User
+communication_language: spanish
+output_folder: '{project-root}/docs'
