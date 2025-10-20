@@ -1,0 +1,78 @@
+﻿<story-context id="bmad/bmm/workflows/4-implementation/story-context/output" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.1</storyId>
+    <title>Activar modo Portal accesible desde el hero</title>
+    <status>Draft</status>
+    <generatedAt>2025-10-19T17:18:58-03:00</generatedAt>
+    <generator>BMAD Story Context Workflow (manual execution)</generator>
+    <sourceStoryPath>docs/stories/story-1.1.md</sourceStoryPath>
+  </metadata>
+  <story>
+    <asA>Como fan inmersivo</asA>
+    <iWant>activar el modo Portal desde el hero y conservar mi preferencia</iWant>
+    <soThat>pueda vivir la experiencia narrativa completa sin perder la version ligera cuando sea necesario</soThat>
+        <tasks>
+      Task 1: Implementar PortalToggle accesible y sincronizado con PortalContext.
+      Subtask 1.1: Definir estados y feedback aria-live con fallback lite para prefers-reduced-motion.
+      Subtask 1.2: Integrar dynamic import del overlay y mantener CTA visibles hasta confirmacion.
+      Task 2: Persistir portal_mode en /app/api/preferences y emitir eventos GA4/Plausible.
+      Subtask 2.1: Actualizar endpoint para aceptar portal_mode y firmar cookie md_preferences.
+      Subtask 2.2: Emitir eventos GA4 y Plausible con acto e idioma.
+      Subtask 2.3: Cobertura de pruebas unitarias, integracion y Playwright para el flujo Portal.
+    </tasks>
+  </story>
+  <acceptanceCriteria>
+    AC1: PortalToggle accesible desde hero, controla fallback lite y respeta prefers-reduced-motion.
+    AC2: Overlay se carga con dynamic import sin bloquear CTA criticos.
+    AC3: Eventos GA4 portal_open y portal_toggle incluyen acto, idioma y estado del portal.
+    AC4: Portal_mode se persiste via /api/preferences con cookie firmada y manejo de errores 400.
+  </acceptanceCriteria>
+  <artifacts>
+    <docs>
+      <doc path="docs/tech-spec-epic-1.md" section="Acceptance Criteria">Define accesibilidad del Portal, eventos GA4 y persistencia en /api/preferences.</doc>
+      <doc path="docs/tech-spec-epic-1.md" section="Detailed Design">Detalla modules/experience-shell, portal overlay y dynamic import.</doc>
+      <doc path="docs/solution-architecture.md" section="Observability & Governance">Describe metricas requeridas y pipeline de analitica.</doc>
+      <doc path="docs/solution-architecture.md" section="Testing Strategy">Resume pruebas unitarias, integracion y E2E para flujo Portal.</doc>
+      <doc path="docs/ux-specification.md" section="UX Goals and Principles">Provee necesidades de accesibilidad y opciones lite para el modo Portal.</doc>
+    </docs>
+    <code>
+      <item path="modules/experience-shell" kind="module" symbol="PortalToggle" lines="tbd">Contendra el componente Frontend que controla el modo Portal y CTA.</item>
+      <item path="modules/shared/preferences" kind="module" symbol="usePreferences" lines="tbd">Gestion de cookie md_preferences e hidratacion SSR.</item>
+      <item path="modules/shared/analytics" kind="module" symbol="trackEvent" lines="tbd">Enviar eventos GA4/Plausible portal_open y portal_toggle.</item>
+      <item path="app/api/preferences/route.ts" kind="api" symbol="PUT /api/preferences" lines="tbd">Endpoint serverless que firma cookie y sincroniza Supabase.</item>
+    </code>
+    <dependencies>
+      <group name="npm">
+        <dependency name="next" version="14.2.3" />
+        <dependency name="react" version="18.3.x" />
+        <dependency name="@supabase/supabase-js" version="2.x" />
+        <dependency name="@sanity/client" version="6.x" />
+        <dependency name="pino" version="8.x" />
+        <dependency name="@vercel/analytics" version="latest" />
+      </group>
+    </dependencies>
+  </artifacts>
+  <constraints>
+    Usar progressive enhancement: overlay debe degradar automaticamente y mantener CTA visibles si Portal no esta disponible.
+    Respetar accesibilidad AA, incluyendo preferencia reduce motion, foco visible y mensajes aria-live.
+    Registrar errores y degradaciones en analytics para observabilidad continua.
+    Mantener animaciones <= 250 ms y sin loops infinitos.
+  </constraints>
+  <interfaces>
+    <interface name="PUT /api/preferences" kind="HTTP" signature="PUT /api/preferences { language, portal_mode, animations_enabled }" path="app/api/preferences/route.ts" />
+    <interface name="PortalContext" kind="ReactContext" signature="PortalContext(state, setState)" path="modules/experience-shell/PortalContext.ts" />
+  </interfaces>
+  <tests>
+    <standards>Seguir Vitest + Testing Library para unidades, pruebas de integracion Next.js con datos mock y Playwright E2E para flujo Portal desktop/mobile; checklist accesibilidad se ejecuta en Storybook con axe.</standards>
+    <locations>tests/unit; tests/integration; tests/e2e; stories/accessibility</locations>
+    <ideas>
+      AC1: Unit tests para PortalToggle validando foco y fallback reduce motion.
+      AC2: Integration test que verifica dynamic import del overlay y CTA visibles.
+      AC3: Playwright verifica eventos GA4 con metadata esperada usando mock.
+      AC4: Tests de API /api/preferences para respuestas 204 y 400 con payloads validos/invalidos.
+    </ideas>
+  </tests>
+</story-context>
+
+
