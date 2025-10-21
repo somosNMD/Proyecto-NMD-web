@@ -1,0 +1,91 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.2</storyId>
+    <title>Hero narrativo con CTA accesibles y multimedia degradable</title>
+    <status>Ready</status>
+    <generatedAt>2025-10-20T19:38:20.2376097-03:00</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/story-1.2.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Como visitante (desktop y mobile)</asA>
+    <iWant>quiero encontrar en el hero la narrativa del acto actual con CTA visibles y accesibles</iWant>
+    <soThat>para completar el pre-save o suscribirme sin friccion incluso si el embed multimedia falla o tengo conexiones lentas.</soThat>
+    <tasks>- [ ] Task 1 (AC: #1) Renderizar hero narrativo con data de Sanity y CTA accesibles.
+  - [ ] Subtask 1.1 Configurar `getActs()` en `modules/experience-shell` para traer minimo tres actos ordenados; manejar fallback cuando Sanity este vacio. [Source: docs/tech-spec-epic-1.md#Detailed Design]
+  - [ ] Subtask 1.2 Implementar layout responsive (12 columnas desktop, carrusel vertical mobile) usando tokens de color/typography definidos en UX spec; asegurar contraste AA y foco visible en CTA. [Source: docs/ux-specification.md:167-195]
+- [ ] Task 2 (AC: #2) Integrar reproductor multimedia con degradacion progresiva.
+  - [ ] Subtask 2.1 Crear `HeroMediaPlayer` que soporte Spotify/YouTube con deteccion de errores (`onError`, `prefers-reduced-motion`) y fallback a imagen estatica + boton. [Source: docs/tech-spec-epic-1.md#Workflows and Sequencing]
+  - [ ] Subtask 2.2 Redactar messaging accesible (`aria-live`) cuando se active el fallback, manteniendo CTA visibles y sin animaciones mayores a 250 ms. [Source: docs/ux-specification.md:243-247]
+- [ ] Task 3 (AC: #3, #4) Unificar telemetria y preferencias en hero.
+  - [ ] Subtask 3.1 Conectar CTA primario a `trackPortalEvent`/`trackHeroEvent` (anadir helper si falta) para emitir `pre_save_click` con `{ act, language, portal_mode }`. [Source: docs/solution-architecture.md:64-76]
+  - [ ] Subtask 3.2 Consumir y actualizar idioma via `modules/shared/preferences` + `/api/preferences`, sincronizando copy del hero y CTA sin recargar. [Source: docs/tech-spec-epic-1.md#Data Models and Contracts]
+  - [ ] Subtask 3.3 Anadir pruebas (unitarias para helpers, integracion para SSR con Sanity stub, Playwright mobile/desktop) cubriendo flujos de idioma y pre-save. [Source: docs/solution-architecture.md#15. Testing Strategy]</tasks>
+  </story>
+
+  <acceptanceCriteria>1. El hero renderiza al menos tres actos obtenidos desde Sanity (`getActs()`), mostrando titulo, copy corto y CTA doble (pre-save primario, newsletter secundario) con foco gestionado y contraste AA. [Source: docs/tech-spec-epic-1.md#Acceptance Criteria, docs/ux-specification.md:34-55]
+2. El reproductor multimedia soporta Spotify y YouTube; si el embed falla o el navegador bloquea el contenido, se degrada a imagen + CTA "Ver teaser" sin romper el layout ni ocultar CTAs principales. [Source: docs/tech-spec-epic-1.md#Acceptance Criteria, docs/ux-specification.md:211-213]
+3. El evento GA4 `pre_save_click` se dispara desde el CTA primario con metadata `{ act, language, portal_mode }`, reutilizando `modules/shared/analytics`. Debe reflejar el acto mostrado y el estado del Portal (lite/inmersivo). [Source: docs/tech-spec-epic-1.md#Observability, docs/solution-architecture.md:64-76]
+4. Al cambiar el idioma desde los toggles del hero, los textos se actualizan inmediatamente y la preferencia persiste tras recargar (cookie `md_preferences` + Supabase). Los CTA mantienen copy localizado. [Source: docs/tech-spec-epic-1.md#APIs and Interfaces, docs/solution-architecture.md:52-78]</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/PRD.md:41" title="Proyecto Web NMD PRD" section="Functional Requirements">Story-driven landing exige hero modular con player Spotify/YouTube y CTA dobles visibles en primer scroll.</doc>
+      <doc path="docs/tech-spec-epic-1.md:53" title="Technical Specification: Storytelling Landing & Portal" section="Workflows and Sequencing">App Router render SSR hero con getActs() desde Sanity y toggles accesibles para Portal.</doc>
+      <doc path="docs/tech-spec-epic-1.md:93" title="Technical Specification: Storytelling Landing & Portal" section="Acceptance Criteria">El hero debe mostrar al menos tres actos de Sanity con CTA principal de pre-save y secundario de newsletter.</doc>
+      <doc path="docs/tech-spec-epic-1.md:95" title="Technical Specification: Storytelling Landing & Portal" section="Acceptance Criteria">El reproductor multimedia debe degradar a imagen mas CTA cuando el embed Spotify/YouTube falla.</doc>
+      <doc path="docs/tech-spec-epic-1.md:80" title="Technical Specification: Storytelling Landing & Portal" section="Observability">Eventos GA4 previstos incluyen pre_save_click, portal_toggle, language_switch y portal_exit.</doc>
+      <doc path="docs/tech-spec-epic-1.md:32" title="Technical Specification: Storytelling Landing & Portal" section="Services and Modules">/app/api/preferences devuelve 204 y firma la cookie md_preferences al persistir idioma y portal_mode.</doc>
+      <doc path="docs/ux-specification.md:211" title="Proyecto Web NMD UX/UI Specification" section="Responsive Design - Adaptation Patterns">El hero se convierte en carrusel vertical en mobile con CTA duplicados bajo el video.</doc>
+      <doc path="docs/ux-specification.md:227" title="Proyecto Web NMD UX/UI Specification" section="Accessibility">Debe mantenerse contraste minimo 4.5:1, soporte teclado y focus visible en CTA.</doc>
+      <doc path="docs/solution-architecture.md:31" title="Proyecto Web NMD - Arquitectura de Solucion" section="Entendimiento del proyecto">El MVP prioriza modo Portal inmersivo pero degradable con control de animaciones y performance.</doc>
+      <doc path="docs/solution-architecture.md:604" title="Proyecto Web NMD - Arquitectura de Solucion" section="15.1 Unit Tests">Vitest y Testing Library cubren componentes base con cobertura minima 80 por ciento en modulos compartidos.</doc>
+    </docs>
+  </artifacts>
+
+    <code>
+      <item path="modules/experience-shell/PortalContext.tsx:44-156" kind="component" symbol="PortalProvider">Gestiona modo Portal, aplica fallback por reduced motion o falta de WebGL y registra eventos GA4 con metadata act/idioma.</item>
+      <item path="modules/experience-shell/environment.ts:1-24" kind="utility" symbol="detectWebGLSupport">Detecta soporte WebGL y preferencia reduce motion para degradar hero multimedia cuando sea necesario.</item>
+      <item path="modules/shared/preferences/client.ts:43-89" kind="module" symbol="storePortalPreference">Persiste preferencias en cookie y via /api/preferences manteniendo idioma y portal_mode sincronizados.</item>
+      <item path="modules/shared/preferences/server.ts:19-59" kind="module" symbol="buildPreferenceCookie">Firma y entrega la cookie md_preferences requerida para persistencia de idioma y portal_mode.</item>
+      <item path="modules/shared/analytics/index.ts:23-47" kind="module" symbol="trackPortalEvent">Normaliza eventos GA4 (portal_open/portal_toggle) empujando payload con act, language y modo.</item>
+      <item path="app/api/preferences/route.ts:8-30" kind="api" symbol="PUT handler">Valida payload portal_mode/idioma con Zod, persiste preferencia y devuelve 204 con Set-Cookie.</item>
+    </code>
+    <dependencies>
+      <group name="npm">
+        <dependency name="next" version="14.2.3" />
+        <dependency name="react" version="18.3.1" />
+        <dependency name="react-dom" version="18.3.1" />
+        <dependency name="cookie" version="0.6.0" />
+        <dependency name="zod" version="3.23.8" />
+        <dependency name="@testing-library/react" version="14.2.1" />
+        <dependency name="@playwright/test" version="1.45.0" />
+        <dependency name="vitest" version="1.5.2" />
+      </group>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Reutilizar PortalContext para obtener portal_mode y metadata al emitir eventos GA4 (docs/stories/story-1.2.md:33).
+    - Mantener render del hero <3s en mobile usando ISR y optimizacion de media (docs/stories/story-1.2.md:34).
+    - Coordinar con UX para aplicar tokens y assets aprobados antes del CSS final (docs/stories/story-1.2.md:35).
+    - Sostener progressive enhancement para Portal y hero segun arquitectura nivel 3 (docs/solution-architecture.md:31).
+  </constraints>
+  <interfaces>
+    <interface name="PortalContext" kind="ReactContext" signature="PortalContextValue { mode, metadata, togglePortal, setMode }" path="modules/experience-shell/PortalContext.tsx:21-152" />
+    <interface name="trackPortalEvent" kind="function" signature="trackPortalEvent(name, payload)" path="modules/shared/analytics/index.ts:23-47" />
+    <interface name="PUT /api/preferences" kind="HTTP" signature="PUT /api/preferences { portal_mode, act, language, fallbackReason? } -> 204" path="app/api/preferences/route.ts:8-30" />
+  </interfaces>
+  <tests>
+    <standards>Seguir guia de arquitectura: Vitest + Testing Library para componentes y hooks, Playwright para flujos hero/Portal, checklist de accesibilidad Storybook (docs/solution-architecture.md:604-613).</standards>
+    <locations>tests/unit; tests/integration; tests/e2e</locations>
+    <ideas>
+      - AC1: tests/unit/modules/experience-shell/hero-layout.test.ts valida render de tres actos, contraste tokens y CTA focus.
+      - AC2: tests/integration/hero-media-player.test.ts simula fallo de embed para comprobar fallback a imagen + CTA accesible.
+      - AC3: tests/unit/shared/analytics/pre-save-event.test.ts asegura payload pre_save_click con act, language y portal_mode.
+      - AC4: tests/e2e/hero-language-toggle.spec.ts usa Playwright para verificar persistencia de idioma y copy localizado tras recarga.
+    </ideas>
+  </tests>
+</story-context>

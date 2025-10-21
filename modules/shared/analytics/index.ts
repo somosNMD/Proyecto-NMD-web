@@ -1,6 +1,9 @@
-﻿import type { PortalFallbackReason, PortalMode } from "@/modules/shared/portal/types";
+import type { PortalFallbackReason, PortalMode } from "@/modules/shared/portal/types";
 
 export type PortalEventName = "portal_open" | "portal_toggle";
+export type HeroEventName = "pre_save_click";
+
+export type AnalyticsEventName = PortalEventName | HeroEventName;
 
 export interface PortalAnalyticsPayload {
   act: string;
@@ -10,9 +13,18 @@ export interface PortalAnalyticsPayload {
   fallbackReason?: PortalFallbackReason;
 }
 
+export interface HeroAnalyticsPayload {
+  act: string;
+  language: string;
+  portalMode: PortalMode;
+  href?: string;
+}
+
+export type AnalyticsPayload = PortalAnalyticsPayload | HeroAnalyticsPayload;
+
 export interface AnalyticsEventRecord {
-  name: PortalEventName;
-  payload: PortalAnalyticsPayload;
+  name: AnalyticsEventName;
+  payload: AnalyticsPayload;
   timestamp: number;
 }
 
@@ -20,7 +32,7 @@ type Listener = (event: AnalyticsEventRecord) => void;
 
 const listeners = new Set<Listener>();
 
-export function trackPortalEvent(name: PortalEventName, payload: PortalAnalyticsPayload) {
+function publishAnalyticsEvent(name: AnalyticsEventName, payload: AnalyticsPayload) {
   const record: AnalyticsEventRecord = {
     name,
     payload,
@@ -29,9 +41,20 @@ export function trackPortalEvent(name: PortalEventName, payload: PortalAnalytics
 
   if (typeof window !== "undefined") {
     const dataLayer = (window as typeof window & { dataLayer?: unknown[] }).dataLayer ?? [];
+    const normalizedPayload =
+      name === "pre_save_click"
+        ? {
+            ...payload,
+            portal_mode: (payload as HeroAnalyticsPayload).portalMode,
+            cta_href: (payload as HeroAnalyticsPayload).href
+          }
+        : {
+            ...payload,
+            portal_mode: (payload as PortalAnalyticsPayload).mode
+          };
     dataLayer.push({
       event: name,
-      ...payload,
+      ...normalizedPayload,
       timestamp: record.timestamp
     });
     (window as typeof window & { dataLayer?: unknown[] }).dataLayer = dataLayer;
@@ -44,6 +67,14 @@ export function trackPortalEvent(name: PortalEventName, payload: PortalAnalytics
   if (typeof console !== "undefined" && process.env.NODE_ENV !== "production") {
     console.debug(`[analytics] ${name}`, payload);
   }
+}
+
+export function trackPortalEvent(name: PortalEventName, payload: PortalAnalyticsPayload) {
+  publishAnalyticsEvent(name, payload);
+}
+
+export function trackHeroEvent(name: HeroEventName, payload: HeroAnalyticsPayload) {
+  publishAnalyticsEvent(name, payload);
 }
 
 export function onAnalyticsEvent(listener: Listener) {

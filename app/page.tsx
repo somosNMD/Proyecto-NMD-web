@@ -1,46 +1,34 @@
-﻿'use client';
-import { PortalProvider, usePortalContext } from "@/modules/experience-shell/PortalContext";
-import PortalToggle from "@/modules/experience-shell/PortalToggle";
+import { cookies } from "next/headers";
+import { HeroExperience } from "@/modules/experience-shell/hero";
+import { getActs } from "@/modules/content-connector/sanity/getActs";
 
-function HeroCtas() {
-  const { overlayReady, mode } = usePortalContext();
-  const hideCtas = mode === "portal" && overlayReady;
+const SUPPORTED_LANGUAGES = ["es", "en"];
 
-  return (
-    <div
-      className="hero__actions"
-      data-hidden={hideCtas}
-      aria-hidden={hideCtas}
-      data-testid="hero-ctas"
-    >
-      <button className="hero__cta hero__cta--primary">Ver trailer</button>
-      <button className="hero__cta hero__cta--secondary">Descargar presskit</button>
-    </div>
+export default async function Page() {
+  const actsEntries = await Promise.all(
+    SUPPORTED_LANGUAGES.map(async (language) => [language, await getActs({ language })] as const)
   );
-}
 
-function HeroSection() {
-  return (
-    <section className="hero" id="hero-portal">
-      <div className="hero__copy">
-        <h1>Portal inmersivo de Nomades</h1>
-        <p>
-          Explora los actos, idiomas y variantes lite directamente desde el hero. Las acciones clave permanecen visibles
-          hasta que el overlay confirme disponibilidad.
-        </p>
-      </div>
-      <PortalToggle heroId="hero-portal" />
-      <HeroCtas />
-    </section>
-  );
-}
+  const actsByLanguage = Object.fromEntries(actsEntries);
 
-export default function Page() {
+  const cookieStore = cookies();
+  const storedPreference = cookieStore.get("md_preferences")?.value;
+  let initialLanguage = "es";
+
+  if (storedPreference) {
+    try {
+      const decoded = JSON.parse(decodeURIComponent(storedPreference)) as { language?: string };
+      if (decoded.language && SUPPORTED_LANGUAGES.includes(decoded.language)) {
+        initialLanguage = decoded.language;
+      }
+    } catch {
+      initialLanguage = "es";
+    }
+  }
+
   return (
     <main>
-      <PortalProvider act="acto-1" language="es">
-        <HeroSection />
-      </PortalProvider>
+      <HeroExperience actsByLanguage={actsByLanguage} initialLanguage={initialLanguage} />
     </main>
   );
 }

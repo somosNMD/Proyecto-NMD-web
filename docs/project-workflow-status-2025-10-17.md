@@ -2,13 +2,13 @@
 
 **Project:** Proyecto Web NMD
 **Created:** 2025-10-14
-**Last Updated:** 2025-10-18
+**Last Updated:** 2025-10-20
 
 ## Current State
 - **Current Phase:** Implementation
-- **Current Step:** story-ready (Story 1.1)
-- **Current Workflow:** Story Ready (Story 1.1) - Complete
-- **Overall Progress:** 62%
+- **Current Step:** backlog-update (Story 1.2 drafted)
+- **Current Workflow:** backlog-update - Pending Approval
+- **Overall Progress:** 95%
 - **Project Level:** 3
 - **Project Type:** web
 - **Greenfield/Brownfield:** greenfield
@@ -48,39 +48,38 @@
 
 #### TODO (Needs Drafting)
 
-(No more stories to draft - all stories are drafted or complete)
+- **Story ID:** 1.2
+- **Story Title:** Hero narrativo con CTA accesibles y multimedia degradable
+- **Story File:** `story-1.2.md`
+- **Status:** Draft
+- **Action:** SM should run `story-ready` para revisar y aprobar la historia
 
 #### IN PROGRESS (Approved for Development)
 
-- **Story ID:** 1.1
-- **Story Title:** Activar modo Portal accesible desde el hero
-- **Story File:** `story-1.1.md`
-- **Story Status:** Ready
-- **Context File:** `docs/stories/story-context-1.1.xml`
-- **Action:** DEV should run `dev-story` workflow para implementar esta historia
+(No story actualmente en desarrollo)
 
 #### DONE (Completed Stories)
 
 | Story ID | File | Completed Date | Points |
 | -------- | ---- | -------------- | ------ |
-| _(none)_ | | | |
+| 1.1 | story-1.1.md | 2025-10-20 | N/A |
 
-**Total completed:** 0 stories
-**Total points completed:** 0 puntos
+**Total completed:** 1 story
+**Total points completed:** N/A puntos
 
 #### Epic/Story Summary
 
 **Total Epics:** 5
-**Total Stories:** 1
+**Total Stories:** 2
 **Stories in Backlog:** 0
-**Stories in TODO:** 0
-**Stories in IN PROGRESS:** 1
-**Stories DONE:** 0
+**Stories in TODO:** 1
+**Stories in IN PROGRESS:** 0
+**Stories DONE:** 1
 
 ## Next Action
-- **What to do next:** Generar el contexto para la historia 1.1 y luego iniciar su implementación.
-- **Command to run:** Run `story-context` workflow para generar el contexto (o ir directo a `dev-story`)
-- **Agent to load:** bmad/bmm/agents/sm.md (contexto) o bmad/bmm/agents/dev.md (implementación)
+- **What to do next:** Revisar la historia 1.2 y aprobarla para desarrollo.
+- **Command to run:** Cargar SM agent y ejecutar `story-ready` sobre `story-1.2.md`.
+- **Agent to load:** bmad/bmm/agents/sm.md
 
 ## Notes
 - UX specification completada; arquitectura y tech specs generadas, listas para implementaciÃ³n.
@@ -96,6 +95,10 @@
 - **2025-10-18:** Solution-architecture completado. Cohesion check 100%, tech specs EP-1..EP-5 generadas. Handoff a SM para create-story.
 - **2025-10-18:** Story 1.1 generado con create-story y story-context completado. Archivo: docs/stories/story-1.1.md. Siguiente: ejecutar story-ready.
 - **2025-10-19:** Story 1.1 marcado como Ready. MOVIDO TODO -> IN PROGRESS. Sin historias pendientes en TODO; backlog pendiente de definir próximas historias.
+- **2025-10-20:** story-context completado para Story 1.1 (Activar modo Portal accesible desde el hero). Context file actualizado: docs/stories/story-context-1.1.xml. Next: DEV agent debe ejecutar `dev-story` para implementar.
+- **2025-10-20:** dev-story completado para Story 1.1. Suites `npm run test` y `npm run test:e2e` en verde; historia en estado Ready for Review a la espera de `story-approved`.
+- **2025-10-20:** Story 1.1 (Activar modo Portal accesible desde el hero) aprobada y cerrada. Historia movida de IN PROGRESS -> DONE. No quedan historias en cola.
+- **2025-10-20:** Nueva historia 1.2 (Hero narrativo con CTA accesibles) añadida al backlog. Pendiente revisión `story-ready`.
 
 
 

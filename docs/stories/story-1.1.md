@@ -50,6 +50,7 @@ para vivir la experiencia narrativa completa sin perder la version ligera cuando
 | --- | --- | --- |
 | 2025-10-18 | create-story workflow | Borrador inicial generado automaticamente. |
 | 2025-10-19 | dev-story workflow | Implementacion completa: PortalToggle accesible, persistencia /api/preferences, telemetria GA4 y suites de pruebas locales/E2E. |
+| 2025-10-20 | Amelia (dev-story workflow) | Validacion final y aprobacion: suites `npm run test` y `npm run test:e2e` en verde; estado marcado como Done. |
 
 ## Dev Agent Record
 
@@ -68,13 +69,15 @@ Codex GPT-5 (create-story)
 - 2025-10-19: Implementado PortalProvider + PortalToggle con accesibilidad `aria-live`, deteccion de `prefers-reduced-motion` y overlay diferido via dynamic import manteniendo CTA visibles hasta `markOverlayReady`.
 - 2025-10-19: Persistencia lista: endpoint `/app/api/preferences` valida payload `portal_mode`, firma cookie `md_preferences`, integra `modules/shared/preferences` y emite eventos GA4/Plausible (`portal_open`, `portal_toggle`).
 - 2025-10-19: Pruebas ejecutadas `npm run test` (unit/integration) y `npm run test:e2e` (Playwright) verificando AC#1-4.
+- 2025-10-20: Revalidacion final: `npm run test` y `npm run test:e2e` sin fallos; verificado listado de archivos y estado actualizado.
 
 ### Completion Notes
-**Completed:** 2025-10-19
+**Completed:** 2025-10-20
 **Definition of Done:** All acceptance criteria met, code reviewed, tests passing, deployed
 
 - 2025-10-19: AC#1-2 cumplidos con PortalToggle accesible (role "switch", aria-live) y fallback a modo lite; overlay mantiene CTA visibles hasta confirmar disponibilidad.
 - 2025-10-19: AC#3-4 cubiertos; API /app/api/preferences firma cookie md_preferences, registra preferencias y dispara eventos GA4/Plausible. Pruebas ejecutadas: npm run test, npm run test:e2e.
+- 2025-10-20: Validacion sin cambios de codigo; pruebas unitarias/integracion y E2E reejecutadas en verde para entrega Ready for Review.
 
 ### File List
 
